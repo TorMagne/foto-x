@@ -1,10 +1,10 @@
 <template>
   <main class="container mx-auto mt-16 px-4">
     <section>
-      <div class="hero hidden rounded-md bg-[#f5f5f5] p-6 shadow-md md:block">
+      <div class="hero hidden rounded-md bg-zinc-700 p-6 shadow-md md:block">
         <div class="hero-content max-w-max flex-col justify-between lg:flex-row-reverse">
           <img src="../assets/images/header.jpg" class="max-w-sm rounded-md shadow-2xl" />
-          <div class="md:mr-10">
+          <div class="text-white md:mr-10">
             <h1 class="font-Raleway mb-4 text-5xl font-bold">Foto X</h1>
             <h2 class="font-Raleway text-3xl font-bold">Skjelstadås Fanger øyeblikket!</h2>
             <p class="font-Libre py-6 text-justify">
@@ -15,7 +15,7 @@
               berører. Kontakt Foto X i dag, og la oss sammen skape magi gjennom fotografiet.
             </p>
             <button
-              class="font-Raleway btn rounded-md bg-black text-white duration-300 ease-in-out hover:border-2 hover:border-black hover:bg-transparent hover:text-black"
+              class="font-Raleway btn rounded-md border-none bg-black text-white duration-300 ease-in-out hover:bg-white hover:text-black"
             >
               Produkter
             </button>
@@ -72,15 +72,15 @@
     </section>
 
     <section
-      class="mt-10 grid grid-cols-1 place-content-between gap-8 text-white md:mt-32 md:grid-cols-2"
+      class="mt-10 grid grid-cols-1 place-content-between gap-8 bg-zinc-700 p-6 text-white md:mt-32 md:grid-cols-2"
     >
-      <div class="avatar order-2 md:order-1">
+      <div class="avatar">
         <div class="w-full rounded md:w-[450px]">
           <img src="../assets/images/omfotox.jpg" alt="partner image" />
         </div>
       </div>
 
-      <div class="order-1 mb-6 md:order-2 md:mb-0">
+      <div class="mb-6 flex flex-col items-start justify-center md:mb-0">
         <h2 class="font-Raleway mb-6 text-lg font-bold md:text-3xl">Ina Skjelstadås</h2>
         <p class="font-Libre mb-4">
           Jeg har høyere fagskole grad i kunstfotografi ved Norsk Fotofagskole, og startet å ta
