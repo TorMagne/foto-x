@@ -26,10 +26,10 @@
                     <summary>PRODUKTER</summary>
                     <ul class="rounded-t-none bg-base-100 p-2">
                       <li class="text-gray-500 hover:text-white">
-                        <router-link>Kunst prosjekter</router-link>
+                        <router-link to="/">Kunst prosjekter</router-link>
                       </li>
                       <li class="text-gray-500 hover:text-white">
-                        <router-link>Foto sjangere</router-link>
+                        <router-link to="/">Foto sjangere</router-link>
                       </li>
                     </ul>
                   </details>
@@ -72,10 +72,10 @@
               <summary>PRODUKTER</summary>
               <ul class="rounded-t-none bg-base-100 p-2">
                 <li class="text-gray-500 hover:text-white">
-                  <router-link>Kunst prosjekter</router-link>
+                  <router-link to="/">Kunst prosjekter</router-link>
                 </li>
                 <li class="text-gray-500 hover:text-white">
-                  <router-link>Foto sjangere</router-link>
+                  <router-link to="/">Foto sjangere</router-link>
                 </li>
               </ul>
             </details>

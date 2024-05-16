@@ -1,7 +1,7 @@
 <template>
-  <footer class="footer mt-16 items-center bg-neutral p-4 text-neutral-content">
+  <footer class="footer mt-auto items-center bg-neutral p-4 text-neutral-content">
     <section class="container mx-auto px-4">
-      <aside class="font-Libre flex">
+      <aside class="flex font-Libre">
         <p class="mr-4">Foto X Skjelstadås - Trondheim, 7049, Norge</p>
         <p>Alle rettigheter forbeholdt Foto X Skjelstadås</p>
       </aside>
