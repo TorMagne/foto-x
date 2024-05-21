@@ -36,13 +36,16 @@
       </label>
       <button class="btn btn-primary" type="submit">Login</button>
     </form>
-    <!-- <button class="btn btn-secondary" @click="logout">Logout</button> -->
+    <button class="btn btn-secondary" @click="logout">Logout</button>
   </main>
 </template>
 
 <script setup>
-  import { ref } from 'vue';
+  import { onMounted, ref } from 'vue';
   import { account, ID } from '@/lib/appwrite.js';
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
 
   const loggedInUser = ref(null);
   const email = ref('');
@@ -55,6 +58,10 @@
       await account.createEmailPasswordSession(email.value, password.value);
       loggedInUser.value = await account.get();
       console.log(loggedInUser.value);
+
+      if (account.get()) {
+        router.push('/adminpanel');
+      }
     } catch (error) {
       console.log(error);
     }
@@ -69,4 +76,15 @@
     await account.deleteSession('current');
     loggedInUser.value = null;
   };
+
+  onMounted(async () => {
+    try {
+      loggedInUser.value = await account.get();
+      if (loggedInUser.value) {
+        router.push('/adminpanel');
+      }
+    } catch (error) {
+      // console.log(error);
+    }
+  });
 </script>
