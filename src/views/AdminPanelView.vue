@@ -2,10 +2,10 @@
   <main class="container mx-auto my-16 px-4">
     <section>
       <!-- Open the modal using ID.showModal() method -->
-      <button class="btn btn-primary mb-8" onclick="my_modal_1.showModal()">
+      <button class="btn btn-primary mb-8" onclick="my_modal_test.showModal()">
         Opprett kunstprosjekt
       </button>
-      <dialog id="my_modal_1" class="modal">
+      <dialog id="my_modal_test" class="modal">
         <div class="modal-box">
           <form @submit.prevent="handleMakeArtProject" class="flex flex-col items-start">
             <label class="form-control w-full max-w-xs">
@@ -51,7 +51,7 @@
         class="flex flex-wrap justify-center"
         :class="artProjects && artProjects.length > 2 ? 'gap-8 md:justify-start' : ''"
       >
-        <template v-for="project in artProjects" :key="project.name">
+        <template v-for="(project, index) in artProjects" :key="project.name">
           <div
             class="card w-96 bg-zinc-700"
             :class="artProjects && artProjects.length > 2 ? '' : 'mr-4'"
@@ -60,14 +60,44 @@
             <div class="card-body">
               <h2 class="card-title mb-4">Kunstprosjek: {{ project.name }}</h2>
               <div class="card-actions justify-start">
-                <button class="btn btn-success mr-4">Legg til bilder</button>
+                <button
+                  class="btn btn-success mr-4"
+                  @click="
+                    showModal(index);
+                    currentArtProject = project;
+                  "
+                >
+                  Legg til bilder
+                </button>
                 <button
                   class="btn btn-error"
                   type="button"
-                  @click="deleteArtProject(project.id, project.imageId)"
+                  @click="
+                    currentArtProject = project;
+                    deleteArtProject(project.id, project.imageId);
+                  "
                 >
                   Slett Kunstprosjek
                 </button>
+                <dialog :id="`my_modal_${index}`" class="modal">
+                  <div class="modal-box">
+                    <form @submit.prevent="test(index)" class="flex flex-col items-start">
+                      <!-- add file inpup -->
+                      <input
+                        type="file"
+                        multiple
+                        class="file-input file-input-bordered file-input-primary w-full max-w-xs"
+                        id="uploaders"
+                      />
+                      <div>
+                        <button class="item btn btn-success mr-4 mt-4" type="submit">Lagre</button>
+                        <button class="btn btn-warning" type="button" @click="closeDialog2(index)">
+                          Avbryt
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </dialog>
               </div>
             </div>
           </div>
@@ -96,10 +126,20 @@
   const artProjects = ref(null);
   const artProjectIds = ref(null);
   const imageUrls = reactive({});
+  const currentArtProject = ref(null);
 
   const closeDialog = () => {
-    const modal = document.getElementById('my_modal_1');
+    const modal = document.getElementById('my_modal_test');
     modal.close();
+  };
+  const closeDialog2 = (index) => {
+    const modal = document.getElementById(`my_modal_${index}`);
+    modal.close();
+  };
+
+  const showModal = (index) => {
+    const modal = document.getElementById(`my_modal_${index}`);
+    if (modal) modal.showModal();
   };
 
   const uploadImage = async () => {
@@ -114,6 +154,42 @@
     return fileResponse.$id; // Return the ID of the uploaded image
   };
 
+  const test = async (index) => {
+    const files = Array.from(document.getElementById('uploaders').files);
+
+    const uploadPromises = files.map((file) =>
+      storage.createFile(
+        bucketId, // bucketId
+        ID.unique(), // fileId
+        file // file
+      )
+    );
+
+    const fileResponses = await Promise.all(uploadPromises);
+
+    const fileIds = fileResponses.map((response) => response.$id);
+
+    const documentImages = await database.getDocument(
+      dbId,
+      currentArtProject.value.collectionId,
+      currentArtProject.value.id
+    );
+
+    const updatedImages = [...documentImages.images, ...fileIds];
+
+    // Updtae the document with the new images array
+    const result = await database.updateDocument(
+      dbId,
+      currentArtProject.value.collectionId,
+      currentArtProject.value.id,
+      { images: updatedImages } // data
+    );
+
+    closeDialog2(index);
+
+    toast.success('Bildene ble lagt til');
+  };
+
   const createArtProject = async (imageId) => {
     const response = await database.createDocument(dbId, artProjectCollectionId, ID.unique(), {
       name: artProjectName.value,
@@ -124,7 +200,7 @@
     console.log('createArtProject', response);
 
     // Close the modal
-    const modal = document.getElementById('my_modal_1');
+    const modal = document.getElementById('my_modal_test');
     modal.close();
 
     // Clear the input field
@@ -138,6 +214,8 @@
       name: response.name,
       imageUrl: await getImageUrl(response.image),
       id: response.$id,
+      imageId: response.image,
+      collectionId: response.$collectionId,
     });
 
     console.log('artProjects1111', artProjects.value);
@@ -183,7 +261,8 @@
   };
 
   const deleteArtProject = async (id, imageId) => {
-    console.log('Deleting project with id:', id);
+    await deleteArtProjectImages();
+    console.log('Deleting project with id:', id, imageId);
 
     await database.deleteDocument(dbId, artProjectCollectionId, id);
 
@@ -195,13 +274,29 @@
       return keep;
     });
 
-    deleteArtProjectImage(imageId);
+    await deleteArtProjectImage(imageId);
 
     toast.error('Kunstprosjektet ble slettet');
   };
 
   const deleteArtProjectImage = async (imageId) => {
+    console.log('Deleting image with id:', imageId);
     await storage.deleteFile(bucketId, imageId);
+  };
+
+  const deleteArtProjectImages = async () => {
+    const documentImages = await database.getDocument(
+      dbId,
+      currentArtProject.value.collectionId,
+      currentArtProject.value.id
+    );
+
+    if (documentImages.images && documentImages.images.length > 0) {
+      for (const imageId of documentImages.images) {
+        console.log('Deleting image with id:', imageId);
+        await storage.deleteFile(bucketId, imageId);
+      }
+    }
   };
 
   onMounted(async () => {
@@ -219,6 +314,7 @@
       imageUrl: imageUrls[project.image],
       id: project.$id,
       imageId: project.image,
+      collectionId: project.$collectionId,
     }));
 
     // Update artProjects.value to be the new array
