@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { account } from '@/lib/appwrite.js';
-import HomeView from '../views/HomeView.vue';
-import LoginView from '../views/LoginView.vue';
-import AdminPanelView from '../views/AdminPanelView.vue';
+const HomeView = () => import('../views/HomeView.vue');
+const LoginView = () => import('../views/LoginView.vue');
+const AdminPanelView = () => import('../views/AdminPanelView.vue');
+const EditImagesview = () => import('../views/EditImagesview.vue');
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +22,11 @@ const router = createRouter({
       path: '/adminpanel',
       name: 'adminpanel',
       component: AdminPanelView,
+    },
+    {
+      path: '/editimages/:id/:collectionId',
+      name: 'editimages',
+      component: EditImagesview,
     },
   ],
 });

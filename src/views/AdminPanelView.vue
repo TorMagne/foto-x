@@ -61,7 +61,7 @@
               <h2 class="card-title mb-4">Kunstprosjek: {{ project.name }}</h2>
               <div class="card-actions justify-start">
                 <button
-                  class="btn btn-success mr-4"
+                  class="btn btn-success"
                   @click="
                     showModal(index);
                     currentArtProject = project;
@@ -79,6 +79,16 @@
                 >
                   Slett Kunstprosjek
                 </button>
+                <router-link
+                  class="btn"
+                  v-if="project && project.id && project.collectionId"
+                  :to="{
+                    name: 'editimages',
+                    params: { id: project.id, collectionId: project.collectionId },
+                  }"
+                >
+                  Rediger bilder
+                </router-link>
                 <dialog :id="`my_modal_${index}`" class="modal">
                   <div class="modal-box">
                     <form @submit.prevent="test(index)" class="flex flex-col items-start">
