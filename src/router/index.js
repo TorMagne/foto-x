@@ -32,7 +32,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name === 'adminpanel') {
+  if (to.name === 'adminpanel' || to.name === 'newadminpanel' || to.name === 'editimages') {
     account
       .get()
       .then(() => {

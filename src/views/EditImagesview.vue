@@ -40,6 +40,7 @@
   const route = useRoute();
   const id = ref(route.params.id);
   const collectionId = ref(route.params.collectionId);
+  const project = ref(route.params.project);
   const imagesArray = ref([]);
   const imageUrls = ref([]);
 
@@ -85,6 +86,7 @@
   };
 
   onMounted(async () => {
+    console.log('aaa', id, collectionId);
     getArtProject();
   });
 </script>
